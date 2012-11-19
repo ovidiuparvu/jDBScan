@@ -10,6 +10,8 @@ import uk.ac.brunel.ovidiuparvu.jdbscan.exception.error.InputException;
 import uk.ac.brunel.ovidiuparvu.jdbscan.input.InputReader;
 import uk.ac.brunel.ovidiuparvu.jdbscan.model.Cluster;
 import uk.ac.brunel.ovidiuparvu.jdbscan.model.Input;
+import uk.ac.brunel.ovidiuparvu.jdbscan.view.ClusterPlotter;
+import uk.ac.brunel.ovidiuparvu.jdbscan.view.ClusterPrinter;
 
 public class Main {
 
@@ -28,14 +30,34 @@ public class Main {
 			
 			List<Cluster> clusters = DBScan.run(input.getTimeSeries(), eps, minNrOfNeighbours);
 			
-			System.out.println(clusters);
-		}  catch (InputException e) {
+			runPrintingThread(input, clusters);
+			//runPlottingThread(input, clusters);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (InputException e) {
 			System.out.println(e.getMessage());
 		} catch (InputMismatchException e) {
 			printHelpMessage();
 		} catch (ExecutionException e) {
 			printErrorMessage();
 		}
+	}
+
+
+	private static void runPlottingThread(Input input, List<Cluster> clusters) throws InterruptedException {
+		Thread plottingThread = new Thread(new ClusterPlotter(clusters, input));
+		
+		plottingThread.run();
+		plottingThread.join();
+	}
+
+
+	private static void runPrintingThread(Input input, List<Cluster> clusters)
+			throws InterruptedException {
+		Thread printingThread = new Thread(new ClusterPrinter(clusters, input));
+		
+		printingThread.run();
+		printingThread.join();
 	}
 
 

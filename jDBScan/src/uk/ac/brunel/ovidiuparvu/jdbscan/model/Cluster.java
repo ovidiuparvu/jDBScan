@@ -11,24 +11,25 @@ public class Cluster {
 	private static int currentId = 0;
 	
 	private int id;
-	private List<TimeSerie> timeSeries;
+	private List<Integer> timeSeriesIndexes;
 	
 	
 	public Cluster() {
 		id = currentId++;
-		timeSeries = new ArrayList<TimeSerie>();
+		timeSeriesIndexes = new ArrayList<Integer>();
 	}
 	
 	public int getId() {
 		return id;
 	}
 
-	public List<TimeSerie> getTimeSeries() {
-		return timeSeries;
+	public List<Integer> getTimeSeriesIndexes() {
+		return timeSeriesIndexes;
 	}
 
-	public void addPoint(TimeSerie timeSerie) {
-		timeSeries.add(timeSerie);
+	public void addTimeSerieIndex(Integer timeSerieIndex) {
+		if (!timeSeriesIndexes.contains(timeSerieIndex))
+			timeSeriesIndexes.add(timeSerieIndex);
 	}
 	
 }

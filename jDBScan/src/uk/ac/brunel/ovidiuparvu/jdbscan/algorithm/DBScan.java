@@ -38,7 +38,7 @@ public class DBScan {
 			List<TimeSerie> neighbours = getNeighboursWithinRange(indexOfUnvisited);
 			
 			if (neighbours.size() < minNrOfNeighbours) {
-				clusters.get(CLUSTER_NOISE_IDX).addPoint(timeSerie);
+				clusters.get(CLUSTER_NOISE_IDX).addTimeSerieIndex(indexOfUnvisited);
 			} else {
 				Cluster cluster = new Cluster();
 				
@@ -46,38 +46,40 @@ public class DBScan {
 				
 				expandCluster(timeSerie, neighbours, cluster);
 			}
+			
+			indexOfUnvisited = getIndexOfUnvisited();
 		}
 		
 		return clusters;
 	}
 
 	private static void expandCluster(TimeSerie timeSerie, List<TimeSerie> neighbours, Cluster cluster) {
-		cluster.addPoint(timeSerie);
+		cluster.addTimeSerieIndex(timeSeries.indexOf(timeSerie));
 		
 		for (TimeSerie neighbour : neighbours) {
-			int indexTimeSerie = timeSeries.indexOf(timeSerie);
+			int indexNeighbourTimeSerie = timeSeries.indexOf(neighbour);
 			
-			if (visitedList.get(indexTimeSerie) == false) {
-				visitedList.set(indexTimeSerie, true);
+			if (visitedList.get(indexNeighbourTimeSerie) == false) {
+				visitedList.set(indexNeighbourTimeSerie, true);
 				
-				List<TimeSerie> neighboursOfNeighbour = getNeighboursWithinRange(indexTimeSerie);
+				List<TimeSerie> neighboursOfNeighbour = getNeighboursWithinRange(indexNeighbourTimeSerie);
 				
 				if (neighboursOfNeighbour.size() >= minNrOfNeighbours) {
 					neighbours.addAll(neighboursOfNeighbour);
 				}
 			}
 			
-			if (isNotMemeberOfClusters(neighbour)) {
-				cluster.addPoint(neighbour);
+			if (isNotMemeberOfClusters(indexNeighbourTimeSerie)) {
+				cluster.addTimeSerieIndex(indexNeighbourTimeSerie);
 			}
 		}
 	}
 
-	private static boolean isNotMemeberOfClusters(TimeSerie neighbour) {
+	private static boolean isNotMemeberOfClusters(int indexNeighbourTimeSerie) {
 		int nrOfClusters = clusters.size();
 		
 		for (int i = 1; i < nrOfClusters; i++) {
-			if (clusters.get(i).getTimeSeries().contains(neighbour))
+			if (clusters.get(i).getTimeSeriesIndexes().contains(indexNeighbourTimeSerie))
 				return false;
 		}
 		

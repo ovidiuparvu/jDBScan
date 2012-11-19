@@ -44,6 +44,12 @@ public class TimeSerie {
 		concentrations.add(concentration);
 	}
 	
+	public double getConcentrationAt(int index) {
+		assert((index >= 0) && (index < concentrations.size()));
+		
+		return concentrations.get(index);
+	}
+	
 	public int getNrOfConcentrations() {
 		return concentrations.size();
 	}
