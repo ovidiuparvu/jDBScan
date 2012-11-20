@@ -56,8 +56,10 @@ public class DBScan {
 	private static void expandCluster(TimeSerie timeSerie, List<TimeSerie> neighbours, Cluster cluster) {
 		cluster.addTimeSerieIndex(timeSeries.indexOf(timeSerie));
 		
-		for (TimeSerie neighbour : neighbours) {
-			int indexNeighbourTimeSerie = timeSeries.indexOf(neighbour);
+		int nrOfNeighbours = neighbours.size();
+		
+		for (int i = 0; i < nrOfNeighbours; i++) {
+			int indexNeighbourTimeSerie = timeSeries.indexOf(neighbours.get(i));
 			
 			if (visitedList.get(indexNeighbourTimeSerie) == false) {
 				visitedList.set(indexNeighbourTimeSerie, true);
@@ -66,6 +68,8 @@ public class DBScan {
 				
 				if (neighboursOfNeighbour.size() >= minNrOfNeighbours) {
 					neighbours.addAll(neighboursOfNeighbour);
+					
+					nrOfNeighbours = neighbours.size();
 				}
 			}
 			

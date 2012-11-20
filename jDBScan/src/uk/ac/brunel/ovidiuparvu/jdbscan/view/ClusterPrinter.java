@@ -10,11 +10,11 @@ import uk.ac.brunel.ovidiuparvu.jdbscan.model.Input;
 
 public class ClusterPrinter extends ClusterViewer {
 
-	private static final String OUTPUT_FILE 		= "clusters.txt";
+	private static final String OUTPUT_FILE 		= "data/clusters.txt";
 	private static final String ERR_FILE_PRINT 		= "An error occurred while printing the results in the output file.";
 	private static final String SEPARATOR_COLUMN	= " ";
 	private static final String SEPARATOR_CLUSTER	= "_";
-	private static final String HEADER_TIME 		= "Time";
+	private static final String HEADER_TIME 		= "#Time";
 	private static final String HEADER_CLUSTER 		= "C";
 
 	
@@ -39,7 +39,7 @@ public class ClusterPrinter extends ClusterViewer {
 	}
 
 	private void printResultsToFile(PrintWriter writer) {
-		printFileHeader(writer);
+		//printFileHeader(writer);
 		printFileContents(writer);
 	}
 
@@ -65,6 +65,7 @@ public class ClusterPrinter extends ClusterViewer {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private void printFileHeader(PrintWriter writer) {
 		writeToFile(writer, HEADER_TIME, false);
 		
