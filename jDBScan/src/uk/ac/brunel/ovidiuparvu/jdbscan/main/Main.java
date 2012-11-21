@@ -10,9 +10,11 @@ import uk.ac.brunel.ovidiuparvu.jdbscan.exception.error.InputException;
 import uk.ac.brunel.ovidiuparvu.jdbscan.input.InputReader;
 import uk.ac.brunel.ovidiuparvu.jdbscan.model.Cluster;
 import uk.ac.brunel.ovidiuparvu.jdbscan.model.Input;
-import uk.ac.brunel.ovidiuparvu.jdbscan.view.ClusterPlotScriptBuilder;
-import uk.ac.brunel.ovidiuparvu.jdbscan.view.ClusterPlotter;
-import uk.ac.brunel.ovidiuparvu.jdbscan.view.ClusterPrinter;
+import uk.ac.brunel.ovidiuparvu.jdbscan.view.plot.ClusterErrorbarsScriptBuilder;
+import uk.ac.brunel.ovidiuparvu.jdbscan.view.plot.ClusterPlotScriptBuilder;
+import uk.ac.brunel.ovidiuparvu.jdbscan.view.plot.ClusterPlotter;
+import uk.ac.brunel.ovidiuparvu.jdbscan.view.print.ClusterErrorbarsPrinter;
+import uk.ac.brunel.ovidiuparvu.jdbscan.view.print.ClusterPlotPrinter;
 
 @SuppressWarnings("unused")
 public class Main {
@@ -32,8 +34,10 @@ public class Main {
 			
 			List<Cluster> clusters = DBScan.run(input.getTimeSeries(), eps, minNrOfNeighbours);
 			
-			runPrintingThread(input, clusters);
+			runPlotPrintingThread(input, clusters);
 			runClusterPlotScriptBuilderThread(input, clusters);
+			runErrorbarsPrintingThread(input, clusters);
+			runClusterErrorbarsScriptBuilderThread(input, clusters);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (InputException e) {
@@ -52,6 +56,13 @@ public class Main {
 		scriptThread.join();
 	}
 	
+	private static void runClusterErrorbarsScriptBuilderThread(Input input, List<Cluster> clusters) throws InterruptedException {
+		Thread scriptThread = new Thread(new ClusterErrorbarsScriptBuilder(clusters, input));
+		
+		scriptThread.run();
+		scriptThread.join();
+	}
+	
 	private static void runClusterPlottingThread(Input input, List<Cluster> clusters) throws InterruptedException {
 		Thread plottingThread = new Thread(new ClusterPlotter(clusters, input));
 		
@@ -59,8 +70,15 @@ public class Main {
 		plottingThread.join();
 	}
 
-	private static void runPrintingThread(Input input, List<Cluster> clusters) 			throws InterruptedException {
-		Thread printingThread = new Thread(new ClusterPrinter(clusters, input));
+	private static void runPlotPrintingThread(Input input, List<Cluster> clusters) throws InterruptedException {
+		Thread printingThread = new Thread(new ClusterPlotPrinter(clusters, input));
+		
+		printingThread.run();
+		printingThread.join();
+	}
+	
+	private static void runErrorbarsPrintingThread(Input input, List<Cluster> clusters) throws InterruptedException {
+		Thread printingThread = new Thread(new ClusterErrorbarsPrinter(clusters, input));
 		
 		printingThread.run();
 		printingThread.join();

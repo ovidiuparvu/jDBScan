@@ -1,0 +1,10 @@
+# Any comments can be specified using this notation
+set terminal svg
+set output "errorbars.svg"
+# The key refers to the legend
+set key off
+set xrange [-2:5500]
+set yrange [-50000:25000000000]
+set ylabel "Amount of ERKPP"
+set xlabel "Time"
+set title "Clusters in EFACTS project using errorbars"
